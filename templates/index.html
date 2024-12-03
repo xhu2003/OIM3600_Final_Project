@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="search-box">
+    <form action="/get-weather" method="post">
+        <div class="input-wrap">
+            <input type="text" name="city" placeholder="Enter a city name..." required>
+            <button type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </form>
+</div>
+
+{% if error %}
+<div class="alert">
+    <i class="fas fa-exclamation-circle"></i> {{ error }}
+</div>
+{% endif %}
+
+{% if weather %}
+<div class="weather-box">
+    <div class="city-name">
+        <i class="fas fa-location-dot"></i> {{ city }}
+    </div>
+    
+    <div class="weather-grid">
+        <div class="weather-item">
+            <i class="fas fa-temperature-high"></i>
+            <div class="value">{{ weather.temperature }}°C</div>
+            <div class="label">Temperature</div>
+        </div>
+        <div class="weather-item">
+            <i class="fas fa-cloud"></i>
+            <div class="value">{{ weather.condition }}</div>
+            <div class="label">Condition</div>
+        </div>
+        <div class="weather-item">
+            <i class="fas fa-droplet"></i>
+            <div class="value">{{ weather.humidity }}%</div>
+            <div class="label">Humidity</div>
+        </div>
+        <div class="weather-item">
+            <i class="fas fa-wind"></i>
+            <div class="value">{{ weather.wind_speed }} m/s</div>
+            <div class="label">Wind</div>
+        </div>
+    </div>
+
+    {% if recommendations %}
+    <div class="recommendations-box">
+        <h3><i class="fas fa-lightbulb"></i> Travel Tips</h3>
+        <div class="recommendations-grid">
+            <div class="recommendation-section">
+                <h4><i class="fas fa-map-marker-alt"></i> Places to Visit</h4>
+                <div class="section-content">
+                    {% for line in recommendations.split('\n') %}
+                        {% if line.strip() and "Places to Visit:" not in line and "What to Bring" not in line and "Suitable Activities:" not in line and not line.startswith('1.') and not line.startswith('2.') and not line.startswith('3.') %}
+                            {% if "Places to Visit:" in recommendations.split('\n')[loop.index0-1] or loop.index0 > 1 and loop.index0 < recommendations.split('\n').index("2. What to Bring/Wear:") %}
+                                <p class="recommendation-item">{{ line.strip() }}</p>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="recommendation-section">
+                <h4><i class="fas fa-suitcase"></i> What to Bring</h4>
+                <div class="section-content">
+                    {% for line in recommendations.split('\n') %}
+                        {% if line.strip() and "Places to Visit:" not in line and "What to Bring" not in line and "Suitable Activities:" not in line and not line.startswith('1.') and not line.startswith('2.') and not line.startswith('3.') %}
+                            {% if "What to Bring/Wear:" in recommendations.split('\n')[loop.index0-1] or loop.index0 > recommendations.split('\n').index("2. What to Bring/Wear:") and loop.index0 < recommendations.split('\n').index("3. Suitable Activities:") %}
+                                <p class="recommendation-item">{{ line.strip() }}</p>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="recommendation-section">
+                <h4><i class="fas fa-running"></i> Activities</h4>
+                <div class="section-content">
+                    {% for line in recommendations.split('\n') %}
+                        {% if line.strip() and "Places to Visit:" not in line and "What to Bring" not in line and "Suitable Activities:" not in line and not line.startswith('1.') and not line.startswith('2.') and not line.startswith('3.') %}
+                            {% if "Suitable Activities:" in recommendations.split('\n')[loop.index0-1] or loop.index0 > recommendations.split('\n').index("3. Suitable Activities:") %}
+                                <p class="recommendation-item">{{ line.strip() }}</p>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <button onclick="shareRecommendations()" class="share-button">
+            <i class="fas fa-share-alt"></i> Share Tips
+        </button>
+    </div>
+    {% endif %}
+</div>
+{% else %}
+<div class="welcome-box">
+    <i class="fas fa-compass welcome-icon"></i>
+    <p>Let's explore somewhere new today!</p>
+</div>
+{% endif %}
+{% endblock %}

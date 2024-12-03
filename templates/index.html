@@ -5,8 +5,9 @@
     <form action="/get-weather" method="post">
         <div class="input-wrap">
             <input type="text" name="city" placeholder="Enter a city name..." required>
-            <button type="submit">
-                <i class="fas fa-search"></i>
+            <button type="submit" title="Search weather" aria-label="Search for city weather">
+                <i class="fas fa-search" aria-hidden="true"></i>
+                <span class="sr-only">Search</span>
             </button>
         </div>
     </form>
@@ -90,8 +91,8 @@
                 </div>
             </div>
         </div>
-        <button onclick="shareRecommendations()" class="share-button">
-            <i class="fas fa-share-alt"></i> Share Tips
+        <button class="share-button" title="Share travel recommendations" aria-label="Share travel recommendations">
+            <i class="fas fa-share-alt" aria-hidden="true"></i> Share Tips
         </button>
     </div>
     {% endif %}
